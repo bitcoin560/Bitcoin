@@ -1,1 +1,95 @@
-Index
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>انضم إلى منصة بيتكوين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 320px;
+        }
+        .logo {
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        input {
+            padding: 10px;
+            width: 85%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: right;
+        }
+        .input-container i {
+            position: absolute;
+            left: 15px;
+            color: #aaa;
+        }
+        button {
+            background: #f7931a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #e67e00;
+        }
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/200px-Bitcoin.svg.png" class="logo" alt="Bitcoin Logo">
+        <h2>انضم إلى منصة بيتكوين</h2>
+        <div class="input-container">
+            <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+            <i class="fa fa-user"></i>
+        </div>
+        <button onclick="register()">
+            <i class="fa fa-sign-in-alt"></i> تسجيل
+        </button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        function register() {
+            let username = document.getElementById("username").value;
+            if (username.trim() === "") {
+                alert("يرجى إدخال اسم المستخدم!");
+                return;
+            }
+            document.getElementById("message").innerHTML = 
+                `<i class="fa fa-check-circle"></i> لقد حصلت على <b>560 نقطة</b> 🎉!`;
+        }
+    </script>
+
+</body>
+</html>
