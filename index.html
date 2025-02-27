@@ -76,6 +76,9 @@
         <button onclick="register()">
             <i class="fa fa-sign-in-alt"></i> تسجيل
         </button>
+        <button id="clientPageBtn" style="display:none;" onclick="goToClientPage()">
+            <i class="fa fa-user-circle"></i> صفحة العميل
+        </button>
         <p id="message"></p>
     </div>
 
@@ -88,6 +91,12 @@
             }
             document.getElementById("message").innerHTML = 
                 `<i class="fa fa-check-circle"></i> لقد حصلت على <b>560 نقطة</b> 🎉!`;
+            localStorage.setItem("username", username);
+            document.getElementById("clientPageBtn").style.display = "block";
+        }
+
+        function goToClientPage() {
+            window.location.href = "client.html";
         }
     </script>
 
