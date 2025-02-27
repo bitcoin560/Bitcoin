@@ -91,7 +91,7 @@
             </tr>
         </table>
         
-        <p class="points">⭐ لديك <b>560</b> نقطة ⭐</p>
+        <p class="points">⭐ لديك <b id="userPoints">560</b> نقطة ⭐</p>
         
         <a href="https://apps.apple.com/us/app/homesafe-view/id1049787000" class="download-btn" target="_blank">
             <i class="fa fa-download"></i> تحميل تطبيق الاشتراك
@@ -102,6 +102,7 @@
 
     <script>
         document.getElementById("clientName").innerText = localStorage.getItem("username") || "العميل";
+        document.getElementById("userPoints").innerText = localStorage.getItem("points") || "0";
 
         function goToHomePage() {
             window.location.href = "index.html";
