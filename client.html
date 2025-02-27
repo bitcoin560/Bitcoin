@@ -63,6 +63,18 @@
         .sell-btn:hover {
             background: #c82333;
         }
+        input {
+            padding: 8px;
+            width: 80%;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .history {
+            text-align: left;
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
         .home-btn {
             background: #6c757d;
             color: white;
@@ -89,83 +101,98 @@
                 <th>💰 رصيد الدولار ($)</th>
                 <th>🪙 رصيد البيتكوين (BTC)</th>
                 <th>⚡ السعر الحالي (BTC/USD)</th>
+                <th>⭐ النقاط</th>
             </tr>
             <tr>
                 <td id="usdBalance">10000</td>
                 <td id="btcBalance">0.5</td>
                 <td id="btcPrice">50000</td>
+                <td id="userPoints">560</td>
             </tr>
         </table>
 
-        <p class="balance">⭐ لديك <b id="userPoints">560</b> نقطة ⭐</p>
-
         <h3>🛒 عمليات التداول</h3>
-        <button class="buy-btn" onclick="buyBitcoin()">شراء 0.1 BTC</button>
-        <button class="sell-btn" onclick="sellBitcoin()">بيع 0.1 BTC</button>
+        <input type="number" id="tradeAmount" placeholder="أدخل كمية BTC" step="0.01">
+        <br>
+        <button class="buy-btn" onclick="buyBitcoin()">شراء</button>
+        <button class="sell-btn" onclick="sellBitcoin()">بيع</button>
+
+        <h3>📜 سجل العمليات</h3>
+        <div class="history" id="history"></div>
 
         <button class="home-btn" onclick="goToHomePage()">🏠 الصفحة الرئيسية</button>
     </div>
 
     <script>
-        // جلب البيانات المخزنة أو تعيين القيم الافتراضية
         let username = localStorage.getItem("username") || "العميل";
         let usdBalance = parseFloat(localStorage.getItem("usdBalance")) || 10000;
         let btcBalance = parseFloat(localStorage.getItem("btcBalance")) || 0.5;
-        let btcPrice = 50000; // السعر الحالي للبيتكوين
-        let userPoints = localStorage.getItem("points") || 560;
+        let btcPrice = 50000; // السعر الحالي للبيتكوين (يمكن تحديثه تلقائيًا)
+        let userPoints = parseInt(localStorage.getItem("points")) || 560;
+        let history = JSON.parse(localStorage.getItem("history")) || [];
 
-        // تحديث واجهة المستخدم
         document.getElementById("clientName").innerText = username;
-        document.getElementById("usdBalance").innerText = usdBalance.toFixed(2);
-        document.getElementById("btcBalance").innerText = btcBalance.toFixed(4);
-        document.getElementById("btcPrice").innerText = btcPrice;
-        document.getElementById("userPoints").innerText = userPoints;
+        updateUI();
 
-        // شراء البيتكوين
         function buyBitcoin() {
-            let buyAmount = 0.1; // كمية الشراء
-            let cost = buyAmount * btcPrice;
+            let amount = parseFloat(document.getElementById("tradeAmount").value);
+            if (isNaN(amount) || amount <= 0) {
+                alert("❌ أدخل كمية صحيحة!");
+                return;
+            }
+            let cost = amount * btcPrice;
+            let pointsCost = (amount / 0.1) * 100;
 
-            if (usdBalance >= cost) {
+            if (usdBalance >= cost && userPoints >= pointsCost) {
                 usdBalance -= cost;
-                btcBalance += buyAmount;
+                btcBalance += amount;
+                userPoints -= pointsCost;
+                history.push(`🟢 شراء ${amount} BTC بسعر ${btcPrice}$`);
                 saveData();
                 updateUI();
-                alert("✅ تم شراء 0.1 BTC بنجاح!");
+                alert("✅ تم الشراء بنجاح!");
             } else {
-                alert("❌ رصيد الدولار غير كافٍ للشراء!");
+                alert("❌ رصيد الدولار أو النقاط غير كافٍ!");
             }
         }
 
-        // بيع البيتكوين
         function sellBitcoin() {
-            let sellAmount = 0.1; // كمية البيع
-            let earnings = sellAmount * btcPrice;
+            let amount = parseFloat(document.getElementById("tradeAmount").value);
+            if (isNaN(amount) || amount <= 0) {
+                alert("❌ أدخل كمية صحيحة!");
+                return;
+            }
+            let earnings = amount * btcPrice;
+            let pointsGain = (amount / 0.1) * 100;
 
-            if (btcBalance >= sellAmount) {
-                btcBalance -= sellAmount;
+            if (btcBalance >= amount) {
+                btcBalance -= amount;
                 usdBalance += earnings;
+                userPoints += pointsGain;
+                history.push(`🔴 بيع ${amount} BTC بسعر ${btcPrice}$`);
                 saveData();
                 updateUI();
-                alert("✅ تم بيع 0.1 BTC بنجاح!");
+                alert("✅ تم البيع بنجاح!");
             } else {
-                alert("❌ رصيد البيتكوين غير كافٍ للبيع!");
+                alert("❌ رصيد البيتكوين غير كافٍ!");
             }
         }
 
-        // حفظ البيانات في Local Storage
         function saveData() {
             localStorage.setItem("usdBalance", usdBalance);
             localStorage.setItem("btcBalance", btcBalance);
+            localStorage.setItem("points", userPoints);
+            localStorage.setItem("history", JSON.stringify(history));
         }
 
-        // تحديث الواجهة بعد عمليات التداول
         function updateUI() {
             document.getElementById("usdBalance").innerText = usdBalance.toFixed(2);
             document.getElementById("btcBalance").innerText = btcBalance.toFixed(4);
+            document.getElementById("btcPrice").innerText = btcPrice;
+            document.getElementById("userPoints").innerText = userPoints;
+            document.getElementById("history").innerHTML = history.map(entry => `<p>${entry}</p>`).join("");
         }
 
-        // الرجوع للصفحة الرئيسية
         function goToHomePage() {
             window.location.href = "index.html";
         }
