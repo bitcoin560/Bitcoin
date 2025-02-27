@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة العميل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 350px;
+        }
+        .logo {
+            width: 80px;
+        }
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background: #f7931a;
+            color: white;
+        }
+        .home-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        .home-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/200px-Bitcoin.svg.png" class="logo" alt="Bitcoin Logo">
+        <h2>مرحبا <span id="clientName"></span> 👋</h2>
+        <h3>📊 بيانات الحساب</h3>
+        <table>
+            <tr>
+                <th>📈 الأسهم</th>
+                <th>📉 المبيعات</th>
+                <th>💰 العملات</th>
+                <th>📊 نسبة الثمن</th>
+            </tr>
+            <tr>
+                <td>5.2 BTC</td>
+                <td>3.1 BTC</td>
+                <td>8.3 BTC</td>
+                <td>+12.5%</td>
+            </tr>
+        </table>
+        <button class="home-btn" onclick="goToHomePage()">🏠 الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+        document.getElementById("clientName").innerText = localStorage.getItem("username") || "العميل";
+
+        function goToHomePage() {
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>
