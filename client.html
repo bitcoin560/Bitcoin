@@ -34,11 +34,6 @@
             background: #f7931a;
             color: white;
         }
-        .balance {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
         .btn {
             padding: 10px;
             margin: 5px;
@@ -74,9 +69,9 @@
         
         <table>
             <tr>
-                <th>💰 رصيد الدولار ($)</th>
-                <th>🪙 رصيد البيتكوين (BTC)</th>
-                <th>⚡ السعر الحالي (BTC/USD)</th>
+                <th>💰 الرصيد ($)</th>
+                <th>🪙 رصيد BTC</th>
+                <th>⚡ السعر الحالي</th>
                 <th>⭐ النقاط</th>
             </tr>
             <tr>
@@ -111,7 +106,7 @@
         let btcPrice = 50000;
         let userPoints = parseInt(localStorage.getItem("points")) || 560;
         let history = JSON.parse(localStorage.getItem("history")) || [];
-        let priceData = JSON.parse(localStorage.getItem("priceData")) || [50000, 50500, 49500, 51000, 49000];
+        let priceData = JSON.parse(localStorage.getItem("priceData")) || [50000, 50200, 49800, 50300, 49700];
 
         document.getElementById("clientName").innerText = username;
         updateUI();
@@ -134,7 +129,7 @@
         function buyBitcoin() {
             let amount = parseFloat(document.getElementById("tradeAmount").value);
             if (isNaN(amount) || amount <= 0) return alert("❌ أدخل كمية صحيحة!");
-            let cost = amount * btcPrice * 1.005;
+            let cost = amount * btcPrice * 1.003;
             let pointsCost = (amount / 0.1) * 100;
 
             if (usdBalance >= cost && userPoints >= pointsCost) {
@@ -153,7 +148,7 @@
         function sellBitcoin() {
             let amount = parseFloat(document.getElementById("tradeAmount").value);
             if (isNaN(amount) || amount <= 0) return alert("❌ أدخل كمية صحيحة!");
-            let earnings = amount * btcPrice * 0.995;
+            let earnings = amount * btcPrice * 0.998;
             let pointsGain = (amount / 0.1) * 100;
 
             if (btcBalance >= amount) {
