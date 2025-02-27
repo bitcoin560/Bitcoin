@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة تداول البيتكوين</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,10 +18,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: inline-block;
-            width: 400px;
-        }
-        .logo {
-            width: 80px;
+            width: 450px;
         }
         table {
             width: 100%;
@@ -42,27 +39,16 @@
             font-weight: bold;
             margin: 10px 0;
         }
-        .buy-btn, .sell-btn {
-            padding: 10px 15px;
+        .btn {
+            padding: 10px;
+            margin: 5px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
         }
-        .buy-btn {
-            background: #28a745;
-            color: white;
-        }
-        .sell-btn {
-            background: #dc3545;
-            color: white;
-        }
-        .buy-btn:hover {
-            background: #218838;
-        }
-        .sell-btn:hover {
-            background: #c82333;
-        }
+        .buy-btn { background: #28a745; color: white; }
+        .sell-btn { background: #dc3545; color: white; }
+        .reset-btn { background: #6c757d; color: white; }
         input {
             padding: 8px;
             width: 80%;
@@ -71,28 +57,18 @@
         }
         .history {
             text-align: left;
-            margin-top: 15px;
             max-height: 150px;
             overflow-y: auto;
         }
-        .home-btn {
-            background: #6c757d;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        .home-btn:hover {
-            background: #5a6268;
+        .chart-container {
+            width: 100%;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/200px-Bitcoin.svg.png" class="logo" alt="Bitcoin Logo">
         <h2>مرحبا <span id="clientName"></span> 👋</h2>
         <h3>📊 بيانات الحساب</h3>
         
@@ -111,36 +87,54 @@
             </tr>
         </table>
 
+        <h3>📈 تغير السعر</h3>
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
+
         <h3>🛒 عمليات التداول</h3>
         <input type="number" id="tradeAmount" placeholder="أدخل كمية BTC" step="0.01">
         <br>
-        <button class="buy-btn" onclick="buyBitcoin()">شراء</button>
-        <button class="sell-btn" onclick="sellBitcoin()">بيع</button>
+        <button class="btn buy-btn" onclick="buyBitcoin()">شراء</button>
+        <button class="btn sell-btn" onclick="sellBitcoin()">بيع</button>
 
         <h3>📜 سجل العمليات</h3>
         <div class="history" id="history"></div>
 
-        <button class="home-btn" onclick="goToHomePage()">🏠 الصفحة الرئيسية</button>
+        <button class="btn reset-btn" onclick="resetData()">🔄 إعادة تعيين</button>
     </div>
 
     <script>
         let username = localStorage.getItem("username") || "العميل";
         let usdBalance = parseFloat(localStorage.getItem("usdBalance")) || 10000;
         let btcBalance = parseFloat(localStorage.getItem("btcBalance")) || 0.5;
-        let btcPrice = 50000; // السعر الحالي للبيتكوين (يمكن تحديثه تلقائيًا)
+        let btcPrice = 50000;
         let userPoints = parseInt(localStorage.getItem("points")) || 560;
         let history = JSON.parse(localStorage.getItem("history")) || [];
+        let priceData = JSON.parse(localStorage.getItem("priceData")) || [50000, 50500, 49500, 51000, 49000];
 
         document.getElementById("clientName").innerText = username;
         updateUI();
 
+        let ctx = document.getElementById('priceChart').getContext('2d');
+        let priceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["قبل 5 دقائق", "قبل 4 دقائق", "قبل 3 دقائق", "قبل دقيقتين", "الآن"],
+                datasets: [{
+                    label: 'سعر البيتكوين',
+                    data: priceData,
+                    borderColor: 'orange',
+                    fill: false
+                }]
+            },
+            options: { responsive: true }
+        });
+
         function buyBitcoin() {
             let amount = parseFloat(document.getElementById("tradeAmount").value);
-            if (isNaN(amount) || amount <= 0) {
-                alert("❌ أدخل كمية صحيحة!");
-                return;
-            }
-            let cost = amount * btcPrice;
+            if (isNaN(amount) || amount <= 0) return alert("❌ أدخل كمية صحيحة!");
+            let cost = amount * btcPrice * 1.005;
             let pointsCost = (amount / 0.1) * 100;
 
             if (usdBalance >= cost && userPoints >= pointsCost) {
@@ -158,11 +152,8 @@
 
         function sellBitcoin() {
             let amount = parseFloat(document.getElementById("tradeAmount").value);
-            if (isNaN(amount) || amount <= 0) {
-                alert("❌ أدخل كمية صحيحة!");
-                return;
-            }
-            let earnings = amount * btcPrice;
+            if (isNaN(amount) || amount <= 0) return alert("❌ أدخل كمية صحيحة!");
+            let earnings = amount * btcPrice * 0.995;
             let pointsGain = (amount / 0.1) * 100;
 
             if (btcBalance >= amount) {
@@ -183,6 +174,7 @@
             localStorage.setItem("btcBalance", btcBalance);
             localStorage.setItem("points", userPoints);
             localStorage.setItem("history", JSON.stringify(history));
+            localStorage.setItem("priceData", JSON.stringify(priceData));
         }
 
         function updateUI() {
@@ -193,8 +185,9 @@
             document.getElementById("history").innerHTML = history.map(entry => `<p>${entry}</p>`).join("");
         }
 
-        function goToHomePage() {
-            window.location.href = "index.html";
+        function resetData() {
+            localStorage.clear();
+            location.reload();
         }
     </script>
 
